@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,38 +8,65 @@ import {
   ActivityIndicator,
   TextInput,
   Button,
-  TouchableOpacity
-} from "react-native";
+} from 'react-native';
 import axios from 'axios';
-import { API_KEY, RECORDS_PER_PAGE } from "./config/constants";
-import { Photo } from "./types/types";
+import { API_KEY, RECORDS_PER_PAGE } from './config/constants';
+import { Photo } from './types/types';
 
 const List = () => {
-  const [searchQuery, setSearchQuery] = useState<string>('panda');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    //getUsers();
-    getImages();
-  }, [currentPage]);
+
+
+
 
   const getImages = async () => {
-
-    try {
-      setIsLoading(true); // Show loader while fetching data
-
-      axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&text=${searchQuery}&per_page=${RECORDS_PER_PAGE}&page=${currentPage}&format=json&nojsoncallback=1`).then(res => {
-        setData([...data, ...res.data.photos.photo]);
-        setIsLoading(false);
-      });
-    } catch (error) {
-      console.error('Error fetching images:', error);
+    console.log('CALLED')
+    if(searchQuery !== '' && !isLoading) {
+      try {
+        setIsLoading(true); // Show loader while fetching data
+        axios
+          .get(
+            `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&text=${searchQuery}&per_page=${RECORDS_PER_PAGE}&page=${currentPage}&format=json&nojsoncallback=1`
+          )
+          .then((res) => {
+            console.log('RESPONSE COMING', currentPage)
+            if(currentPage === 1){
+              setData(res.data.photos.photo);
+            }else {
+              setData([...data, ...res.data.photos.photo]);
+            }
+            setIsLoading(false);
+          });
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
     }
-
   };
 
+
+  useEffect(() => {
+    console.log('CURRENT PAGE IN USE EFFECT', currentPage)
+    if(currentPage !== 1) {
+      getImages();
+    }
+  }, [currentPage]);
+
+
+  const loadMoreItem = () => {
+    console.log('LOAD MORE CALLED')
+    if(currentPage !== 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const handleSearch = () => {
+    console.log('CURRENT PAGE IN NORMAL', currentPage);
+    //setCurrentPage(1);
+    getImages();
+  };
 
   const renderItem = ({ item }: { item: Photo; index: number }) => (
     <View style={styles.item}>
@@ -48,87 +74,46 @@ const List = () => {
         source={{
           uri: `https://farm${item.farm}.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`,
         }}
-        style={{width: 100, height: 100}}
+        style={{ width: 100, height: 100 }}
       />
       <Text>{item.title}</Text>
     </View>
   );
 
   const renderFooter = () => {
-    return(
-      isLoading ?
-        <View style={styles.loaderStyle}>
-          <ActivityIndicator size="large" color="#aaa" />
-        </View> : null
-    )
-  }
+    return isLoading ? (
+      <View style={styles.loaderStyle}>
+        <ActivityIndicator size="large" color="#aaa" />
+      </View>
+    ) : null;
+  };
 
-  const loadMoreItem = () => {
-    setCurrentPage( currentPage + 1);
-  }
 
-  const searchBar = (
+  return (
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>
         <View style={styles.search}>
           <TextInput
             style={styles.textField}
             placeholder="Enter your text here"
-            onChangeText={text => setSearchQuery(text)}
+            onChangeText={(text) => setSearchQuery(text)}
             value={searchQuery}
           />
         </View>
         <View style={styles.searchButton}>
-          <Button onPress={getImages} title="Search" />
+          <Button onPress={handleSearch} title="Search" />
         </View>
       </View>
-      {/*{searchHistory.length > 0 && (*/}
-      {/*  <View style={styles.historyContainer}>*/}
-      {/*    <View style={styles.historyBreadcrumbs}>*/}
-      {/*      <View style={{width: '50%', justifyContent: 'center'}}>*/}
-      {/*        <Text>Search History:</Text>*/}
-      {/*      </View>*/}
-      {/*      <View*/}
-      {/*        style={{*/}
-      {/*          width: '50%',*/}
-      {/*          alignItems: 'flex-end',*/}
-      {/*          paddingRight: '2%',*/}
-      {/*        }}>*/}
-      {/*        {searchHistory.length > 0 && (*/}
-      {/*          <TouchableOpacity onPress={clearSearchHistory}>*/}
-      {/*            <Text style={styles.historyText}>Clear</Text>*/}
-      {/*          </TouchableOpacity>*/}
-      {/*        )}*/}
-      {/*      </View>*/}
-      {/*    </View>*/}
-      {/*    <View style={styles.chipsContainer}>*/}
-      {/*      {searchHistory.map((item, index) => (*/}
-      {/*        <TouchableOpacity*/}
-      {/*          key={index}*/}
-      {/*          onPress={() => console.log('Selected:', item)}*/}
-      {/*          style={styles.chip}>*/}
-      {/*          <Text>{item}</Text>*/}
-      {/*        </TouchableOpacity>*/}
-      {/*      ))}*/}
-      {/*    </View>*/}
-      {/*  </View>*/}
-      {/*)}*/}
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        ListFooterComponent={renderFooter}
+        onEndReached={loadMoreItem}
+        onEndReachedThreshold={0}
+      />
     </View>
-  );
-
-
-
-  return (
-
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
-      numColumns={2}
-      ListFooterComponent={renderFooter}
-      onEndReached={loadMoreItem}
-      onEndReachedThreshold={0}
-    />
   );
 };
 
