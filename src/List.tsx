@@ -50,21 +50,20 @@ const List = () => {
 
   useEffect(() => {
     console.log('CURRENT PAGE IN USE EFFECT', currentPage)
-    if(currentPage !== 1) {
+
       getImages();
-    }
+
   }, [currentPage]);
 
 
   const loadMoreItem = () => {
     console.log('LOAD MORE CALLED')
-    if(currentPage !== 1) {
+
       setCurrentPage(currentPage + 1);
-    }
   };
   const handleSearch = () => {
-    console.log('CURRENT PAGE IN NORMAL', currentPage);
-    //setCurrentPage(1);
+   // console.log('CURRENT PAGE IN NORMAL', currentPage);
+    setCurrentPage(1);
     getImages();
   };
 
@@ -110,8 +109,12 @@ const List = () => {
         keyExtractor={(item) => item.id}
         numColumns={2}
         ListFooterComponent={renderFooter}
-        onEndReached={loadMoreItem}
-        onEndReachedThreshold={0}
+        onEndReached={() => {
+          if (!isLoading) {
+            loadMoreItem();
+          }
+        }}
+        onEndReachedThreshold={0.001}
       />
     </View>
   );
