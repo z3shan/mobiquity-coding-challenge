@@ -14,17 +14,28 @@ import styles from './Search.styles';
 
 import {Photo} from '../types/types';
 import {API_KEY, RECORDS_PER_PAGE} from '../config/constants';
+
+
+/**
+ * Define the SearchScreen component.
+ * @returns {React.ReactNode} The SearchScreen component.
+ */
+
 const SearchScreen = () => {
+  // State variables for search functionality and data handling.
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Photo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Function to fetch images from Flickr API.
+   */
   const getImages = async () => {
     if (searchQuery !== '' && !isLoading) {
       try {
-        setIsLoading(true); // Show loader while fetching data
+        setIsLoading(true);
         axios
           .get(
             `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&text=${searchQuery}&per_page=${RECORDS_PER_PAGE}&page=${currentPage}&format=json&nojsoncallback=1`,
@@ -50,16 +61,26 @@ const SearchScreen = () => {
     getImages();
   }, [currentPage]);
 
+  /**
+   * Function to load more items when reaching the end of the list.
+   */
   const loadMoreItem = () => {
     if (!isLoading) {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  /**
+   * Function to handle search button press.
+   */
   const handleSearch = async () => {
     await setCurrentPage(1);
     getImages();
   };
 
+  /**
+   * Function to clear search history and reset data.
+   */
   const clearSearchHistory = () => {
     setSearchQuery('');
     setSearchHistory([]);
@@ -67,6 +88,12 @@ const SearchScreen = () => {
     setCurrentPage(1);
   };
 
+
+  /**
+   * Memoized renderItem function to render individual list items.
+   * @param {Object} param0 - The item and index to render.
+   * @returns {React.ReactNode} The rendered list item.
+   */
   const renderItem = useMemo(
     () =>
       ({item}: {item: Photo; index: number}) =>
@@ -84,6 +111,11 @@ const SearchScreen = () => {
     [],
   );
 
+
+  /**
+   * Function to render the loading indicator at the end of the list.
+   * @returns {React.ReactNode|null} The loading indicator component or null.
+   */
   const renderFooter = () => {
     return isLoading ? (
       <View style={styles.loaderStyle}>
@@ -101,10 +133,11 @@ const SearchScreen = () => {
             placeholder="Enter your text here"
             onChangeText={text => setSearchQuery(text)}
             value={searchQuery}
+            testID="search-field"
           />
         </View>
         <View style={styles.searchButton}>
-          <Button onPress={handleSearch} title="Search" />
+          <Button testID="search-button" onPress={handleSearch} title="Search" />
         </View>
       </View>
       {searchHistory.length > 0 && (
