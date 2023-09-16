@@ -1,6 +1,57 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  itemWrapperStyle: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+  },
+
+  historyClearStyle: {
+    width: '50%',
+    alignItems: 'flex-end',
+    paddingRight: '3%',
+  },
+
+  itemImageStyle: {
+    width: 50,
+    height: 50,
+    marginRight: 16,
+  },
+  contentWrapperStyle: {
+    justifyContent: 'space-around',
+  },
+  textNameStyle: {
+    fontSize: 16,
+  },
+  textEmailStyle: {
+    color: '#777',
+  },
+  loaderStyle: {
+    marginVertical: 16,
+    marginHorizontal: 16,
+    alignItems: 'center',
+  },
+  item: {
+    flex: 1,
+    backgroundColor: '#fff',
+    margin: 8,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+
   searchContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -62,23 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  item: {
-    flex: 1,
-    backgroundColor: '#fff',
-    margin: 8,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+
   loadingContainer: {
     paddingVertical: 20,
     alignItems: 'center',
