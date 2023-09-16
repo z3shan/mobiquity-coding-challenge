@@ -62,7 +62,6 @@ const List = () => {
       setCurrentPage(currentPage + 1);
   };
   const handleSearch = () => {
-   // console.log('CURRENT PAGE IN NORMAL', currentPage);
     setCurrentPage(1);
     getImages();
   };
