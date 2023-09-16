@@ -60,14 +60,6 @@ const SearchScreen = () => {
     getImages();
   };
 
-
-  const searchFromHistory = (historyItem: string) => {
-
-    setSearchQuery(historyItem);
-    getImages();
-
-  }
-
   const clearSearchHistory = () => {
     setSearchQuery('');
     setSearchHistory([]);
@@ -134,7 +126,6 @@ const SearchScreen = () => {
             {searchHistory.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => searchFromHistory(item)}
                 style={styles.chip}>
                 <Text>{item}</Text>
               </TouchableOpacity>
