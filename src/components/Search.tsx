@@ -146,8 +146,7 @@ const SearchScreen = () => {
             <View style={{width: '50%', justifyContent: 'center'}}>
               <Text>Search History:</Text>
             </View>
-            <View
-              style={styles.historyClearStyle}>
+            <View style={styles.historyClearStyle}>
               {searchHistory.length > 0 && (
                 <TouchableOpacity onPress={clearSearchHistory}>
                   <Text style={styles.historyText}>Clear</Text>
@@ -168,6 +167,7 @@ const SearchScreen = () => {
       )}
 
       <FlatList
+        testID="flat-list"
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id}
