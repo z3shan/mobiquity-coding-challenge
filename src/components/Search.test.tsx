@@ -14,7 +14,7 @@ import axios from 'axios';
 
 // Mock axios to prevent actual HTTP requests during tests
 jest.mock('axios');
-
+/*Ideally we should move mocked data into a separate folder/file(__mocks__)*/
 const mockResponse = {
   data: {
     photos: {
